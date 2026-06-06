@@ -1,4 +1,4 @@
-class Hz < Formula
+class HzCli < Formula
   desc "Fast terminal workflow for parallel development with agents"
   homepage "https://github.com/phongndo/hz"
   license "MIT"
