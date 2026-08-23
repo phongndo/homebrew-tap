@@ -1,0 +1,92 @@
+name: Update mark-cli
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag to publish. Leave empty for the latest stable release.
+        required: false
+        type: string
+  repository_dispatch:
+    types:
+      - mark-release
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-mark-cli
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Update formula
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout tap
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Resolve release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_TAG: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
+          UPSTREAM_REPOSITORY: phongndo/mark
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_tag="$REQUESTED_TAG"
+          if [[ -z "$release_tag" ]]; then
+            release_tag="$(gh api "repos/$UPSTREAM_REPOSITORY/releases/latest" --jq .tag_name)"
+          fi
+          if [[ ! "$release_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "invalid mark release tag: $release_tag" >&2
+            exit 1
+          fi
+          echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Download generated formula
+        id: formula
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.release_tag }}
+          UPSTREAM_REPOSITORY: phongndo/mark
+        shell: bash
+        run: |
+          set -euo pipefail
+          temporary_directory="$(mktemp -d)"
+          trap 'rm -rf "$temporary_directory"' EXIT
+
+          gh release download "$RELEASE_TAG" \
+            --repo "$UPSTREAM_REPOSITORY" \
+            --pattern mark-cli.rb \
+            --dir "$temporary_directory"
+
+          candidate="$temporary_directory/mark-cli.rb"
+          ruby -c "$candidate"
+          grep -Fq "class MarkCli < Formula" "$candidate"
+          grep -Fq "releases/download/$RELEASE_TAG/" "$candidate"
+
+          if cmp -s "$candidate" Formula/mark-cli.rb; then
+            echo "mark-cli is already at $RELEASE_TAG"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          install -m 644 "$candidate" Formula/mark-cli.rb
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit formula
+        if: steps.formula.outputs.changed == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.release_tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/mark-cli.rb
+          git commit -m "mark-cli $RELEASE_TAG"
+          git push
