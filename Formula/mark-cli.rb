@@ -1,30 +1,30 @@
 class MarkCli < Formula
   desc "Fast, keyboard-first terminal Git diff reviewer"
   homepage "https://github.com/phongndo/mark"
-  version "0.14.1"
+  version "0.14.2"
   license "MIT"
 
   on_macos do
     on_intel do
-      url "https://github.com/phongndo/mark/releases/download/v0.14.1/mark-v0.14.1-x86_64-apple-darwin.tar.gz"
-      sha256 "e7cf52ea4040ad36a767476cfded96575c7181659153ccd9c3952640e4ebd609"
+      url "https://github.com/phongndo/mark/releases/download/v0.14.2/mark-v0.14.2-x86_64-apple-darwin.tar.gz"
+      sha256 "b75dd1300c8442cc7b94deda95cb7f8c8f502549e4e5bfdc13c2b8ad990a3ecb"
     end
 
     on_arm do
-      url "https://github.com/phongndo/mark/releases/download/v0.14.1/mark-v0.14.1-aarch64-apple-darwin.tar.gz"
-      sha256 "ab86e665f80b0019915deb9db10f17c9bf68dd23b03f41765523d8d2b02953a9"
+      url "https://github.com/phongndo/mark/releases/download/v0.14.2/mark-v0.14.2-aarch64-apple-darwin.tar.gz"
+      sha256 "2da0bc0d5a5a34b8f28d9e8699705cc5ac154bee8dc5d3a515356c3a10fa9a73"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/phongndo/mark/releases/download/v0.14.1/mark-v0.14.1-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "a60db76922b56cafed077de15e2f8f06dfdaeb81c48ba1ca172ee3f4c0056a9a"
+      url "https://github.com/phongndo/mark/releases/download/v0.14.2/mark-v0.14.2-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "2150e8088582ecf383edaa536efe775e4176730017fa02ee3221461d05a1a9e4"
     end
 
     on_arm do
-      url "https://github.com/phongndo/mark/releases/download/v0.14.1/mark-v0.14.1-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "892b00611197d055856f130749820622a9f4a84b641c6f4f54479f19bf6b131e"
+      url "https://github.com/phongndo/mark/releases/download/v0.14.2/mark-v0.14.2-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "15115b701e8489c7a44d34f8adb4085f5afa8765dbc3fea33f6b04ad21a86389"
     end
   end
 
