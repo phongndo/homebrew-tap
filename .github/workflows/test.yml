@@ -42,3 +42,30 @@ jobs:
           brew install phongndo/tap/mark-cli
           "$(brew --prefix)/bin/mark" --version
           brew test phongndo/tap/mark-cli
+
+  frame:
+    name: frame (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout tap
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@dc7099b3e807f1e2ecc61f3ecabc840eedd5586a
+
+      - name: Add local tap
+        run: brew tap phongndo/tap "$GITHUB_WORKSPACE"
+
+      - name: Install and test frame
+        run: |
+          brew style phongndo/tap/frame
+          brew install phongndo/tap/frame
+          brew test phongndo/tap/frame
