@@ -8,6 +8,7 @@ Install a formula directly from this tap:
 
 ```sh
 brew install phongndo/tap/mark-cli
+brew install phongndo/tap/lemma
 ```
 
 Alternatively, add the tap once and then install formulae by name:
@@ -22,5 +23,9 @@ brew install mark-cli
 | Formula | Project | Executable |
 | --- | --- | --- |
 | [`mark-cli`](Formula/mark-cli.rb) | [Mark](https://github.com/phongndo/mark) | `mark` |
+| [`lemma`](Formula/lemma.rb) | [Lemma](https://github.com/phongndo/lemma) | `lemma` |
 
 Formula updates are generated from each project's verified release checksums.
+
+The [Lemma updater](.github/workflows/update-lemma.yml) tracks stable releases.
+Run `lemma serve` from a project to open its web app.
