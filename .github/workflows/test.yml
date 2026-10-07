@@ -42,10 +42,3 @@ jobs:
           brew install phongndo/tap/mark-cli
           "$(brew --prefix)/bin/mark" --version
           brew test phongndo/tap/mark-cli
-
-      - name: Install and test lemma
-        if: hashFiles('Formula/lemma.rb') != ''
-        run: |
-          brew install phongndo/tap/lemma
-          "$(brew --prefix)/bin/lemma" --version
-          brew test phongndo/tap/lemma
