@@ -61,9 +61,6 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@dc7099b3e807f1e2ecc61f3ecabc840eedd5586a
 
-      - name: Add local tap
-        run: brew tap phongndo/tap "$GITHUB_WORKSPACE"
-
       - name: Install and test frame
         run: |
           brew style phongndo/tap/frame
