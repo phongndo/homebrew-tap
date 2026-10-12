@@ -1,0 +1,79 @@
+name: Update hz-cli
+
+on:
+  schedule:
+    - cron: "47 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Stable hz release tag. Leave empty for the latest release.
+        required: false
+        type: string
+  repository_dispatch:
+    types: [hz-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-hz-cli
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Resolve release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_TAG: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="$REQUESTED_TAG"
+          if [[ -z "$tag" ]]; then
+            tag="$(gh api repos/phongndo/hz/releases --jq '[.[] | select(.draft == false and .prerelease == false)][0].tag_name // ""')"
+          fi
+          if [[ -z "$tag" ]]; then
+            echo 'No stable hz release yet.'
+            exit 0
+          fi
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          # Releases from before the formula was generated have none to publish.
+          if ! gh release view "$tag" --repo phongndo/hz --json assets --jq '.assets[].name' | grep -Fxq hz-cli.rb; then
+            echo "hz $tag has no hz-cli.rb."
+            exit 0
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Download generated formula
+        if: steps.release.outputs.tag != ''
+        id: formula
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          temporary="$(mktemp -d)"
+          trap 'rm -rf "$temporary"' EXIT
+          gh release download "$RELEASE_TAG" --repo phongndo/hz --pattern hz-cli.rb --dir "$temporary"
+          candidate="$temporary/hz-cli.rb"
+          ruby -c "$candidate"
+          grep -Fq 'class HzCli < Formula' "$candidate"
+          grep -Fq "https://github.com/phongndo/hz/releases/download/$RELEASE_TAG/" "$candidate"
+          if cmp -s "$candidate" Formula/hz-cli.rb; then exit 0; fi
+          install -m 644 "$candidate" Formula/hz-cli.rb
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Commit formula
+        if: steps.formula.outputs.changed == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Formula/hz-cli.rb
+          git commit -m "hz-cli $RELEASE_TAG"
+          git push

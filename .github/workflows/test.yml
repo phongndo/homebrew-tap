@@ -66,3 +66,40 @@ jobs:
           brew style phongndo/tap/frame
           brew install phongndo/tap/frame
           brew test phongndo/tap/frame
+
+  # Formulas a project's release workflow generates; each appears with its first release.
+  released:
+    name: ${{ matrix.formula }} (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        formula: [leetvim, hz-cli]
+        os: [macos-14, ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check for the formula
+        id: formula
+        run: |
+          if [[ -f "Formula/${{ matrix.formula }}.rb" ]]; then
+            echo 'present=true' >> "$GITHUB_OUTPUT"
+          else
+            echo "No ${{ matrix.formula }} release has been published yet."
+          fi
+
+      - name: Set up Homebrew
+        if: steps.formula.outputs.present == 'true'
+        uses: Homebrew/actions/setup-homebrew@dc7099b3e807f1e2ecc61f3ecabc840eedd5586a
+
+      - name: Install and test ${{ matrix.formula }}
+        if: steps.formula.outputs.present == 'true'
+        run: |
+          brew style "phongndo/tap/${{ matrix.formula }}"
+          brew install "phongndo/tap/${{ matrix.formula }}"
+          brew test "phongndo/tap/${{ matrix.formula }}"
