@@ -26,10 +26,9 @@ brew install mark-cli
 | --- | --- | --- |
 | [`mark-cli`](Formula/mark-cli.rb) | [Mark](https://github.com/phongndo/mark) | `mark` |
 | [`frame`](Formula/frame.rb) | [Frame](https://github.com/phongndo/frame) | `frame` |
-| `leetvim` | [leetvim](https://github.com/phongndo/leetvim) | `leetvim` |
-| `hz-cli` | [hz](https://github.com/phongndo/hz) | `hz` |
+| [`leetvim`](Formula/leetvim.rb) | [leetvim](https://github.com/phongndo/leetvim) | `leetvim` |
+| [`hz-cli`](Formula/hz-cli.rb) | [hz](https://github.com/phongndo/hz) | `hz` |
 
 Formula updates are generated from each project's verified release checksums.
 Each updater picks up its project's stable releases every hour, or at once when the
-project's release workflow dispatches it, and can also be run manually. `leetvim` and `hz-cli`
-appear with their projects' first releases.
+project's release workflow dispatches it, and can also be run manually.
