@@ -30,6 +30,6 @@ brew install mark-cli
 | `hz-cli` | [hz](https://github.com/phongndo/hz) | `hz` |
 
 Formula updates are generated from each project's verified release checksums.
-Each updater picks up its project's stable releases every six hours, or at once when the
+Each updater picks up its project's stable releases every hour, or at once when the
 project's release workflow dispatches it, and can also be run manually. `leetvim` and `hz-cli`
 appear with their projects' first releases.
