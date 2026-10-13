@@ -1,7 +1,7 @@
 class Frame < Formula
   desc "Fast, extensible terminal multiplexer"
   homepage "https://github.com/phongndo/frame"
-  version "0.1.0"
+  version "0.2.0"
   license "MIT"
 
   on_macos do
@@ -9,20 +9,20 @@ class Frame < Formula
     depends_on macos: :sonoma
 
     on_arm do
-      url "https://github.com/phongndo/frame/releases/download/v0.1.0/frame-v0.1.0-aarch64-apple-darwin.tar.gz"
-      sha256 "114f9a66780ec30501268c9aabae23e3b3b58d42a320c7d428fd024e726a8bbc"
+      url "https://github.com/phongndo/frame/releases/download/v0.2.0/frame-v0.2.0-aarch64-apple-darwin.tar.gz"
+      sha256 "13c4f6966fa1514fd680fb1f3ece6d47c904a6aa1100ceaacec5014a75370723"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/phongndo/frame/releases/download/v0.1.0/frame-v0.1.0-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "d8d18b74011f4dbae47e4046f2699e4f3ed26fbabb3fb169d81b7521e04c3fbc"
+      url "https://github.com/phongndo/frame/releases/download/v0.2.0/frame-v0.2.0-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "8c1bf6cea302b1d48e680372ead14c9849347e9fc11c0f131e8ca3b129447814"
     end
 
     on_intel do
-      url "https://github.com/phongndo/frame/releases/download/v0.1.0/frame-v0.1.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "cddf02e0bf20f8efc6046afa8de77d39a1779c5f14da8212575acd957322797e"
+      url "https://github.com/phongndo/frame/releases/download/v0.2.0/frame-v0.2.0-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "ca7850e2a2e5957f73e638379b946be167d44204d2c1a9bb9ebfbe35b4a55e1d"
     end
   end
 
