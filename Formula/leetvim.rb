@@ -1,7 +1,7 @@
 class Leetvim < Formula
   desc "LeetCode in your terminal, solved in your own vim"
   homepage "https://github.com/phongndo/leetvim"
-  version "0.1.1"
+  version "0.1.2"
   license "MIT"
 
   on_macos do
@@ -9,20 +9,20 @@ class Leetvim < Formula
     depends_on macos: :sonoma
 
     on_arm do
-      url "https://github.com/phongndo/leetvim/releases/download/v0.1.1/leetvim-v0.1.1-aarch64-apple-darwin.tar.gz"
-      sha256 "00111bd2f6203e590bba1d6710468d8ecd48a1e2a414a817ffcf42c29ac70f40"
+      url "https://github.com/phongndo/leetvim/releases/download/v0.1.2/leetvim-v0.1.2-aarch64-apple-darwin.tar.gz"
+      sha256 "350a62e324fc99643567c3acdd16a4b5c53423fdeb1cdfad331fb4f5a595e563"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/phongndo/leetvim/releases/download/v0.1.1/leetvim-v0.1.1-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "1cd45784eeb30b228fac0a47d50d4dc6440a69a9eb34d70f1fd7f9a0a94e4199"
+      url "https://github.com/phongndo/leetvim/releases/download/v0.1.2/leetvim-v0.1.2-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "7b8964925a4baa08ced8a0ddf93f42d9f22683e8eb16c6d88908b9d538703644"
     end
 
     on_intel do
-      url "https://github.com/phongndo/leetvim/releases/download/v0.1.1/leetvim-v0.1.1-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "791ec35f637d9b08070be395e3646177d78411d52c003f6768531a787c04868d"
+      url "https://github.com/phongndo/leetvim/releases/download/v0.1.2/leetvim-v0.1.2-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "2670bac74b8c978b60fa996aae31e990732d4598910e90e75a709834db7dfe1f"
     end
   end
 
