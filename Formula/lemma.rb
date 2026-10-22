@@ -28,11 +28,28 @@ class Lemma < Formula
 
   def install
     libexec.install Dir["*"]
+    # On macOS, Homebrew gives each library in a keg its own path as its ID, which a
+    # prebuilt one with no room in its header for a longer ID refuses (fff's file
+    # search): the libraries go in after it has, from post_install.
+    libraries = OS.mac? ? libexec.glob("**/*.dylib").select { |library| library.realpath == library } : []
+    unless libraries.empty?
+      relative = libraries.map { |library| library.relative_path_from(libexec) }
+      system "tar", "-cf", libexec/"libraries.tar", "-C", libexec, *relative
+      libraries.each(&:unlink)
+    end
     # What installed it: lemma update updates it with brew, and runs the lemma Homebrew links.
     (libexec/"install.json").write <<~JSON
       {"installer": "homebrew", "link": "#{HOMEBREW_PREFIX}/bin/lemma", "manager": "#{HOMEBREW_PREFIX}/bin/brew"}
     JSON
     bin.install_symlink libexec/"bin/lemma"
+  end
+
+  def post_install
+    libraries = libexec/"libraries.tar"
+    return unless libraries.exist?
+
+    system "tar", "-xf", libraries, "-C", libexec
+    libraries.unlink
   end
 
   test do
