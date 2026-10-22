@@ -8,7 +8,7 @@ cask "lemma" do
   homepage "https://github.com/phongndo/lemma"
 
   depends_on arch: :arm64
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "Lemma.app"
   binary "#{appdir}/Lemma.app/Contents/Resources/lemma/bin/lemma"
