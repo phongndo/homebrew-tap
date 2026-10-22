@@ -1,0 +1,98 @@
+name: Update lemma
+
+# Lemma's release workflow makes a formula and a cask for each release (lemma.rb and lemma-cask.rb, from
+# phongndo/lemma's scripts/homebrew.ts); this takes them up from its stable release, the one GitHub marks latest, which
+# Lemma's Promote workflow moves, a rollback included.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Lemma release tag. Leave empty for the stable release.
+        required: false
+        type: string
+  repository_dispatch:
+    types: [lemma-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-lemma
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Resolve release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_TAG: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="$REQUESTED_TAG"
+          if [[ -z "$tag" ]]; then
+            tag="$(gh api repos/phongndo/lemma/releases/latest --jq '.tag_name // ""' 2>/dev/null || true)"
+          fi
+          if [[ -z "$tag" ]]; then
+            echo 'No stable Lemma release yet.'
+            exit 0
+          fi
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          # Releases from before the formula and cask were generated have none to publish.
+          assets="$(gh release view "$tag" --repo phongndo/lemma --json assets --jq '.assets[].name')"
+          if ! grep -Fxq lemma.rb <<<"$assets" || ! grep -Fxq lemma-cask.rb <<<"$assets"; then
+            echo "Lemma $tag has no lemma.rb and lemma-cask.rb."
+            exit 0
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Download generated formula and cask
+        if: steps.release.outputs.tag != ''
+        id: files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          temporary="$(mktemp -d)"
+          trap 'rm -rf "$temporary"' EXIT
+          gh release download "$RELEASE_TAG" --repo phongndo/lemma --pattern lemma.rb --pattern lemma-cask.rb --dir "$temporary"
+          ruby -c "$temporary/lemma.rb"
+          ruby -c "$temporary/lemma-cask.rb"
+          grep -Fq 'class Lemma < Formula' "$temporary/lemma.rb"
+          grep -Fq "https://github.com/phongndo/lemma/releases/download/$RELEASE_TAG/" "$temporary/lemma.rb"
+          grep -Fq 'cask "lemma" do' "$temporary/lemma-cask.rb"
+          grep -Fq "version \"${RELEASE_TAG#v}\"" "$temporary/lemma-cask.rb"
+          mkdir -p Formula Casks
+          changed=false
+          if ! cmp -s "$temporary/lemma.rb" Formula/lemma.rb; then
+            install -m 644 "$temporary/lemma.rb" Formula/lemma.rb
+            changed=true
+          fi
+          if ! cmp -s "$temporary/lemma-cask.rb" Casks/lemma.rb; then
+            install -m 644 "$temporary/lemma-cask.rb" Casks/lemma.rb
+            changed=true
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      - name: Commit formula and cask
+        if: steps.files.outputs.changed == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Formula/lemma.rb Casks/lemma.rb
+          git commit -m "lemma $RELEASE_TAG"
+          # The other updaters push to main too; each changes only its own files.
+          for _ in 1 2 3; do
+            git pull --rebase --quiet && git push && exit 0
+            sleep 5
+          done
+          exit 1
