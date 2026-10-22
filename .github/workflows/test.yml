@@ -73,7 +73,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        formula: [leetvim, hz-cli]
+        formula: [leetvim, hz-cli, lemma]
         os: [macos-14, ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -103,3 +103,41 @@ jobs:
           brew style "phongndo/tap/${{ matrix.formula }}"
           brew install "phongndo/tap/${{ matrix.formula }}"
           brew test "phongndo/tap/${{ matrix.formula }}"
+
+  # Casks a project's release workflow generates, each with its first release: the app installed, and the command it
+  # links run.
+  casks:
+    name: ${{ matrix.cask }} cask (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        cask: [lemma]
+        os: [macos-14]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check for the cask
+        id: cask
+        run: |
+          if [[ -f "Casks/${{ matrix.cask }}.rb" ]]; then
+            echo 'present=true' >> "$GITHUB_OUTPUT"
+          else
+            echo "No ${{ matrix.cask }} release has been published yet."
+          fi
+
+      - name: Set up Homebrew
+        if: steps.cask.outputs.present == 'true'
+        uses: Homebrew/actions/setup-homebrew@dc7099b3e807f1e2ecc61f3ecabc840eedd5586a
+
+      - name: Install ${{ matrix.cask }}
+        if: steps.cask.outputs.present == 'true'
+        run: |
+          brew style "phongndo/tap/${{ matrix.cask }}"
+          brew install --cask "phongndo/tap/${{ matrix.cask }}"
+          "$(brew --prefix)/bin/${{ matrix.cask }}" --version
