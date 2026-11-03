@@ -1,30 +1,30 @@
 class Alive2Mcp < Formula
   desc "MCP server and CLI for checking LLVM IR transformations with Alive2"
   homepage "https://github.com/phongndo/alive2-mcp"
-  version "0.1.0"
+  version "0.1.1"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.0/alive2-mcp_0.1.0_darwin_arm64.tar.gz"
-      sha256 "d44b8f3868be8c923cb95c217de084c384217749c7387fc8f51e0974eecd93bc"
+      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.1/alive2-mcp_0.1.1_darwin_arm64.tar.gz"
+      sha256 "994bb424106acb1c30a0ff3a3ad3da9546b17c653c5fc9e413375305f5f41bbf"
     end
 
     on_intel do
-      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.0/alive2-mcp_0.1.0_darwin_amd64.tar.gz"
-      sha256 "695d156801f534893c211d27d10f3a48200c45227bf9df3f78111c498ca80bdf"
+      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.1/alive2-mcp_0.1.1_darwin_amd64.tar.gz"
+      sha256 "231a079ad7a9c198a8813580d9eaca36314680d730daa7b8a8e934283d4b747a"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.0/alive2-mcp_0.1.0_linux_arm64.tar.gz"
-      sha256 "2e5147eac6322a78329737e86edd53091d77dcd2a1e110a9aa4f825aaa33125c"
+      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.1/alive2-mcp_0.1.1_linux_arm64.tar.gz"
+      sha256 "3283104834b8aaec00e768d19944034fe7e36fec5677f175fbcdc0b2d0bb8393"
     end
 
     on_intel do
-      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.0/alive2-mcp_0.1.0_linux_amd64.tar.gz"
-      sha256 "332858b2dae4e66ad6576d27f927e289a04f268c57df9adfdb78b4d2884dc71b"
+      url "https://github.com/phongndo/alive2-mcp/releases/download/v0.1.1/alive2-mcp_0.1.1_linux_amd64.tar.gz"
+      sha256 "1621a4d60d6d4c1201b9a49ecd6df085b8844aa3b66322434c95731c0a6daaeb"
     end
   end
 
