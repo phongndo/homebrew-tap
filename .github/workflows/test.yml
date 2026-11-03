@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+  # Updaters start it after committing a formula; their pushes alone don't.
+  workflow_dispatch:
 
 permissions:
   contents: read

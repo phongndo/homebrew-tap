@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  actions: write # to start Test formulas after a push
 
 concurrency:
   group: update-mark-cli
@@ -83,6 +84,7 @@ jobs:
       - name: Commit formula
         if: steps.formula.outputs.changed == 'true'
         env:
+          GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.release_tag }}
         run: |
           git config user.name "github-actions[bot]"
@@ -91,7 +93,8 @@ jobs:
           git commit -m "mark-cli $RELEASE_TAG"
           # The other updaters push to main too; each changes only its own formula.
           for _ in 1 2 3; do
-            git pull --rebase --quiet && git push && exit 0
+            # Pushes with GITHUB_TOKEN start no workflows; a dispatch is the exception.
+            git pull --rebase --quiet && git push && { gh workflow run test.yml --ref main || echo "::warning::could not start Test formulas"; exit 0; }
             sleep 5
           done
           exit 1
