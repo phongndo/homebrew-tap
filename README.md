@@ -12,6 +12,7 @@ brew install phongndo/tap/frame
 brew install phongndo/tap/leetvim
 brew install phongndo/tap/hz-cli
 brew install phongndo/tap/lemma
+brew install phongndo/tap/alive2-mcp
 brew install --cask phongndo/tap/lemma
 ```
 
@@ -31,6 +32,7 @@ brew install mark-cli
 | [`leetvim`](Formula/leetvim.rb) | [leetvim](https://github.com/phongndo/leetvim) | `leetvim` |
 | [`hz-cli`](Formula/hz-cli.rb) | [hz](https://github.com/phongndo/hz) | `hz` |
 | [`lemma`](Formula/lemma.rb) | [Lemma](https://github.com/phongndo/lemma) | `lemma` |
+| [`alive2-mcp`](Formula/alive2-mcp.rb) | [alive2-mcp](https://github.com/phongndo/alive2-mcp) | `alive2-mcp` |
 
 ## Casks
 
