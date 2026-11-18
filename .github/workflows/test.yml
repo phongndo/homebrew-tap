@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-14
+          - macos-15
           - macos-15-intel
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
@@ -50,7 +50,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, ubuntu-24.04, ubuntu-24.04-arm]
+        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
 
@@ -76,7 +76,7 @@ jobs:
       fail-fast: false
       matrix:
         formula: [leetvim, hz-cli, lemma, alive2-mcp]
-        os: [macos-14, ubuntu-24.04, ubuntu-24.04-arm]
+        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
 
@@ -114,7 +114,7 @@ jobs:
       fail-fast: false
       matrix:
         cask: [lemma]
-        os: [macos-14]
+        os: [macos-15]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
 
